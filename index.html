@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WaveMeet Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg:#0A0A0F; --s1:#12121A; --s2:#1A1A26;
+  --b1:rgba(255,255,255,0.07); --b2:rgba(255,255,255,0.13);
+  --text:#F0F0FF; --t2:#9090B0; --muted:#505070;
+  --g1:#FF006E; --g2:#8338EC; --g3:#3A86FF; --g4:#06FFB4; --g5:#FFBE0B;
+  --red:#FF4060; --green:#06FFB4;
+}
+html,body { margin:0; padding:0; width:100%; min-height:100%; background:#0A0A0F; color:#F0F0FF; font-family:'Space Grotesk',-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; max-width:100%; }
+.hidden { display:none!important; }
+
+/* ── LOGIN SCREEN ── */
+#login-screen {
+  position:fixed; inset:0; z-index:999;
+  background:#0A0A0F;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.login-card {
+  background:rgba(18,18,26,.95); border:1px solid var(--b2);
+  border-radius:20px; padding:40px 32px; width:100%; max-width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6); text-align:center;
+}
+.admin-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,190,11,.08); border:1px solid rgba(255,190,11,.25);
+  border-radius:20px; padding:5px 14px; margin-bottom:20px;
+  font-size:11px; font-weight:700; font-family:'Space Mono',monospace;
+  color:var(--g5); letter-spacing:.07em; text-transform:uppercase;
+}
+.login-card h1 { font-size:26px; font-weight:800; color:#fff; margin-bottom:6px; }
+.login-card p  { font-size:13px; color:var(--t2); margin-bottom:28px; }
+.fl { display:block; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; text-align:left; }
+.fi { display:block; width:100%; background:rgba(255,255,255,.05); border:1.5px solid var(--b2); border-radius:10px; padding:12px 13px; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:500; outline:none; transition:border-color .2s; -webkit-appearance:none; margin-bottom:14px; }
+.fi:focus { border-color:var(--g3); }
+.fi::placeholder { color:var(--muted); }
+.btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px; border-radius:10px; border:none; font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:800; cursor:pointer; transition:all .15s; }
+.btn-grad { background:linear-gradient(135deg,var(--g2),var(--g1)); color:#fff; box-shadow:0 4px 20px rgba(131,56,236,.4); }
+.btn-grad:active { transform:scale(.97); }
+.err { display:none; background:rgba(255,64,96,.1); border:1px solid rgba(255,64,96,.3); border-radius:10px; padding:10px; font-size:13px; color:var(--red); text-align:center; margin-bottom:12px; }
+.err.on { display:block; }
+
+/* ── ADMIN LAYOUT ── */
+#admin-app { display:none; min-height:100vh; }
+
+.admin-nav {
+  position:fixed; top:0; left:0; right:0; height:56px; z-index:100;
+  display:flex; align-items:center; justify-content:space-between; padding:0 20px;
+  background:rgba(10,10,15,.92); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--b1);
+}
+.admin-nav-logo { display:flex; align-items:center; gap:8px; }
+.admin-nav-icon { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--g2),var(--g1)); display:flex; align-items:center; justify-content:center; }
+.admin-nav-name { font-size:16px; font-weight:800; color:#fff; }
+.admin-nav-right { display:flex; align-items:center; gap:10px; }
+.admin-nav-badge { font-size:10px; font-weight:700; font-family:'Space Mono',monospace; color:var(--g5); background:rgba(255,190,11,.08); border:1px solid rgba(255,190,11,.2); border-radius:20px; padding:3px 10px; }
+.admin-signout { padding:6px 14px; border-radius:8px; border:1px solid var(--b2); background:transparent; color:var(--t2); font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; cursor:pointer; }
+
+.admin-body { padding:76px 20px 40px; max-width:960px; margin:0 auto; }
+
+/* Stats row */
+.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:28px; }
+.stat-card { background:rgba(18,18,26,.8); border:1px solid var(--b2); border-radius:14px; padding:18px; }
+.stat-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-family:'Space Mono',monospace; margin-bottom:8px; }
+.stat-value { font-size:28px; font-weight:800; color:#fff; letter-spacing:-.02em; }
+.stat-sub { font-size:12px; color:var(--t2); margin-top:4px; }
+
+/* Section */
+.section { background:rgba(18,18,26,.8); border:1px solid var(--b2); border-radius:16px; padding:24px; margin-bottom:16px; }
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.section-title { font-size:16px; font-weight:800; color:#fff; }
+.section-sub { font-size:12px; color:var(--muted); font-family:'Space Mono',monospace; margin-top:2px; }
+
+/* Form rows */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.form-row.single { grid-template-columns:1fr; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.field label { font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; letter-spacing:.08em; font-family:'Space Mono',monospace; }
+.field input, .field select {
+  background:rgba(255,255,255,.05); border:1.5px solid var(--b2);
+  border-radius:10px; padding:11px 13px; color:var(--text);
+  font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:500; outline:none;
+  transition:border-color .2s; -webkit-appearance:none;
+}
+.field input:focus, .field select:focus { border-color:var(--g3); }
+.field input::placeholder { color:var(--muted); }
+.field select option { background:#1A1A26; color:#F0F0FF; }
+
+.save-btn { padding:11px 24px; border-radius:10px; border:none; background:linear-gradient(135deg,var(--g2),var(--g3)); color:#fff; font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:800; cursor:pointer; transition:all .15s; }
+.save-btn:active { transform:scale(.97); }
+.save-btn.red { background:linear-gradient(135deg,var(--red),#FF0040); }
+
+/* TURN accounts list */
+.accounts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.account-item { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.04); border:1px solid var(--b1); border-radius:10px; padding:12px 14px; }
+.account-info { flex:1; min-width:0; }
+.account-name { font-size:13px; font-weight:700; color:#fff; }
+.account-user { font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.account-status { width:8px; height:8px; border-radius:50%; background:var(--green); flex-shrink:0; }
+.account-del { padding:6px 12px; border-radius:7px; border:1px solid rgba(255,64,96,.3); background:rgba(255,64,96,.08); color:var(--red); font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; cursor:pointer; flex-shrink:0; }
+
+/* Users table */
+.users-table { width:100%; border-collapse:collapse; }
+.users-table th { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-family:'Space Mono',monospace; padding:8px 12px; text-align:left; border-bottom:1px solid var(--b1); }
+.users-table td { padding:12px 12px; font-size:13px; color:var(--t2); border-bottom:1px solid var(--b1); vertical-align:middle; }
+.users-table tr:last-child td { border-bottom:none; }
+.users-table .name-cell { color:#fff; font-weight:600; }
+.plan-badge { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; font-family:'Space Mono',monospace; }
+.plan-free { background:rgba(255,255,255,.06); color:var(--muted); }
+.plan-pro  { background:rgba(131,56,236,.15); color:var(--g2); border:1px solid rgba(131,56,236,.3); }
+.action-btn { padding:5px 12px; border-radius:7px; border:none; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; cursor:pointer; }
+.action-revoke { background:rgba(255,64,96,.1); color:var(--red); border:1px solid rgba(255,64,96,.25); }
+.action-grant  { background:rgba(131,56,236,.1); color:var(--g2); border:1px solid rgba(131,56,236,.25); }
+
+/* Toast */
+#admin-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px); background:rgba(26,26,38,.97); border:1px solid var(--b2); color:#fff; border-radius:10px; padding:10px 20px; font-size:13px; font-weight:700; opacity:0; pointer-events:none; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:9999; white-space:nowrap; }
+#admin-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Loading */
+.loader { display:flex; align-items:center; justify-content:center; padding:32px; color:var(--muted); font-size:13px; font-family:'Space Mono',monospace; }
+
+@media(max-width:600px) {
+  .form-row { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .users-table { font-size:12px; }
+  .users-table th, .users-table td { padding:8px 6px; }
+}
+</style>
+</head>
+<body>
+
+<div id="admin-toast"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="admin-badge">⚙️ Admin Panel</div>
+    <h1>WaveMeet Admin</h1>
+    <p>Restricted access. Enter your admin credentials.</p>
+    <label class="fl">Admin password</label>
+    <input class="fi" type="password" id="admin-pass" placeholder="Enter admin password" />
+    <div class="err" id="login-err"></div>
+    <button class="btn btn-grad" onclick="adminLogin()">Access Panel</button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <nav class="admin-nav">
+    <div class="admin-nav-logo">
+      <div class="admin-nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 10l4.553-2.275A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14V10z" fill="white"/><rect x="3" y="6" width="12" height="12" rx="2.5" fill="white"/></svg>
+      </div>
+      <span class="admin-nav-name">WaveMeet</span>
+    </div>
+    <div class="admin-nav-right">
+      <div class="admin-nav-badge">⚙️ ADMIN</div>
+      <button class="admin-signout" onclick="adminLogout()">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="stat-users">—</div>
+        <div class="stat-sub">registered accounts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pro Users</div>
+        <div class="stat-value" id="stat-pro">—</div>
+        <div class="stat-sub">active subscriptions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Free Users</div>
+        <div class="stat-value" id="stat-free">—</div>
+        <div class="stat-sub">on free plan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">TURN Accounts</div>
+        <div class="stat-value" id="stat-turn">—</div>
+        <div class="stat-sub">active relays</div>
+      </div>
+    </div>
+
+    <!-- Subscription Config -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">💳 Subscription Settings</div>
+          <div class="section-sub">// set price and duration for Pro plan</div>
+        </div>
+        <button class="save-btn" onclick="saveSubConfig()">Save Changes</button>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Price</label>
+          <input type="number" id="cfg-price" placeholder="e.g. 2000" />
+        </div>
+        <div class="field">
+          <label>Currency</label>
+          <select id="cfg-currency">
+            <option value="NGN">NGN — Nigerian Naira</option>
+            <option value="GHS">GHS — Ghanaian Cedi</option>
+            <option value="USD">USD — US Dollar</option>
+            <option value="GBP">GBP — British Pound</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+            <option value="ZAR">ZAR — South African Rand</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Duration (months)</label>
+          <input type="number" id="cfg-months" placeholder="3" min="1" max="24" />
+        </div>
+        <div class="field">
+          <label>Flutterwave Public Key</label>
+          <input type="text" id="cfg-fw-key" placeholder="FLWPUBK_TEST-..." />
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="field">
+          <label>Free call limit (seconds)</label>
+          <input type="number" id="cfg-free-limit" placeholder="30" min="10" max="300" />
+        </div>
+      </div>
+    </div>
+
+    <!-- TURN Accounts -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">📡 TURN Server Accounts</div>
+          <div class="section-sub">// add multiple Metered accounts to extend monthly limit</div>
+        </div>
+      </div>
+
+      <div class="accounts-list" id="accounts-list">
+        <div class="loader">Loading accounts…</div>
+      </div>
+
+      <div style="border-top:1px solid var(--b1);padding-top:16px;margin-top:4px">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Add new Metered account</div>
+        <div class="form-row">
+          <div class="field">
+            <label>Account name (label)</label>
+            <input type="text" id="new-acc-name" placeholder="e.g. Account 2" />
+          </div>
+          <div class="field">
+            <label>Username</label>
+            <input type="text" id="new-acc-user" placeholder="Metered username" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Password</label>
+            <input type="text" id="new-acc-pass" placeholder="Metered password" />
+          </div>
+          <div class="field" style="justify-content:flex-end">
+            <label>&nbsp;</label>
+            <button class="save-btn" onclick="addTurnAccount()">Add Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Password -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">🔑 Admin Password</div>
+          <div class="section-sub">// change your admin panel password</div>
+        </div>
+        <button class="save-btn" onclick="changeAdminPass()">Update Password</button>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>New password</label>
+          <input type="password" id="new-admin-pass" placeholder="New password" />
+        </div>
+        <div class="field">
+          <label>Confirm password</label>
+          <input type="password" id="confirm-admin-pass" placeholder="Confirm new password" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">👥 Users</div>
+          <div class="section-sub">// manage user subscriptions</div>
+        </div>
+        <button class="save-btn" onclick="loadUsers()" style="background:rgba(255,255,255,.08);color:var(--t2)">Refresh</button>
+      </div>
+      <div id="users-container">
+        <div class="loader">Loading users…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const FB_CFG = {
+  apiKey:"AIzaSyCduZGxLq_pwSE2BustK4Z5suKV83vdknw",
+  authDomain:"wave-220b6.firebaseapp.com",
+  projectId:"wave-220b6",
+  storageBucket:"wave-220b6.firebasestorage.app",
+  messagingSenderId:"634835256647",
+  appId:"1:634835256647:web:fcfc069523a81d2bdaf862"
+};
+
+const fbApp = initializeApp(FB_CFG, 'admin');
+const db    = getFirestore(fbApp);
+
+window._db = db;
+window._fbFns = { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc };
+
+window.loadAdminData = async () => {
+  await Promise.all([loadConfig(), loadAccounts(), loadUsers()]);
+};
+
+// ── CONFIG ──────────────────────────────
+window.loadConfig = async () => {
+  try {
+    const cfg = (await getDoc(doc(db,'config','subscription'))).data() || {};
+    document.getElementById('cfg-price').value    = cfg.price || '';
+    document.getElementById('cfg-currency').value = cfg.currency || 'NGN';
+    document.getElementById('cfg-months').value   = cfg.months || 3;
+    document.getElementById('cfg-fw-key').value   = cfg.fwPublicKey || '';
+    document.getElementById('cfg-free-limit').value = cfg.freeLimit || 30;
+  } catch(e) { adminToast('Could not load config: '+e.message); }
+};
+
+window.saveSubConfig = async () => {
+  try {
+    const price    = parseFloat(document.getElementById('cfg-price').value) || 0;
+    const currency = document.getElementById('cfg-currency').value;
+    const months   = parseInt(document.getElementById('cfg-months').value) || 3;
+    const fwKey    = document.getElementById('cfg-fw-key').value.trim();
+    const freeLimit= parseInt(document.getElementById('cfg-free-limit').value) || 30;
+    await setDoc(doc(db,'config','subscription'), { price, currency, months, fwPublicKey:fwKey, freeLimit }, { merge:true });
+    adminToast('✅ Subscription settings saved!');
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+// ── TURN ACCOUNTS ───────────────────────
+window.loadAccounts = async () => {
+  try {
+    const snap = await getDocs(collection(db,'turnAccounts'));
+    const list = document.getElementById('accounts-list');
+    if(snap.empty){ list.innerHTML='<div class="loader" style="color:var(--muted)">No accounts yet — add one below</div>'; document.getElementById('stat-turn').textContent='0'; return; }
+    document.getElementById('stat-turn').textContent = snap.size;
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const acc = d.data();
+      const el  = document.createElement('div');
+      el.className = 'account-item';
+      el.innerHTML = `
+        <div class="account-status"></div>
+        <div class="account-info">
+          <div class="account-name">${acc.name||'Unnamed'}</div>
+          <div class="account-user">User: ${acc.username}</div>
+        </div>
+        <button class="account-del" onclick="deleteTurnAccount('${d.id}')">Remove</button>
+      `;
+      list.appendChild(el);
+    });
+  } catch(e) { adminToast('Error loading accounts: '+e.message); }
+};
+
+window.addTurnAccount = async () => {
+  const name = document.getElementById('new-acc-name').value.trim();
+  const user = document.getElementById('new-acc-user').value.trim();
+  const pass = document.getElementById('new-acc-pass').value.trim();
+  if(!name||!user||!pass){ adminToast('Fill in all fields.'); return; }
+  try {
+    const id = 'acc_' + Date.now();
+    await setDoc(doc(db,'turnAccounts',id), { name, username:user, password:pass, addedAt:new Date().toISOString() });
+    document.getElementById('new-acc-name').value='';
+    document.getElementById('new-acc-user').value='';
+    document.getElementById('new-acc-pass').value='';
+    adminToast('✅ Account added!');
+    await loadAccounts();
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+window.deleteTurnAccount = async (id) => {
+  if(!confirm('Remove this TURN account?')) return;
+  try {
+    await deleteDoc(doc(db,'turnAccounts',id));
+    adminToast('Account removed');
+    await loadAccounts();
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+// ── USERS ───────────────────────────────
+window.loadUsers = async () => {
+  const container = document.getElementById('users-container');
+  container.innerHTML = '<div class="loader">Loading users…</div>';
+  try {
+    const snap = await getDocs(collection(db,'users'));
+    if(snap.empty){ container.innerHTML='<div class="loader" style="color:var(--muted)">No users yet</div>'; return; }
+    let total=0, pro=0, free=0;
+    const rows = [];
+    snap.forEach(d => {
+      total++;
+      const u = d.data();
+      const isPro = u.subscribed && u.expiresAt && new Date(u.expiresAt) > new Date();
+      if(isPro) pro++; else free++;
+      const expiry = u.expiresAt ? new Date(u.expiresAt).toLocaleDateString() : '—';
+      rows.push(`
+        <tr>
+          <td class="name-cell">${u.name||u.email?.split('@')[0]||'Unknown'}</td>
+          <td>${u.email||'—'}</td>
+          <td><span class="plan-badge ${isPro?'plan-pro':'plan-free'}">${isPro?'PRO':'FREE'}</span></td>
+          <td>${isPro?expiry:'—'}</td>
+          <td>
+            ${isPro
+              ? `<button class="action-btn action-revoke" onclick="revokeUser('${d.id}')">Revoke</button>`
+              : `<button class="action-btn action-grant"  onclick="grantUser('${d.id}')">Grant Pro</button>`
+            }
+          </td>
+        </tr>
+      `);
+    });
+    document.getElementById('stat-users').textContent = total;
+    document.getElementById('stat-pro').textContent   = pro;
+    document.getElementById('stat-free').textContent  = free;
+    container.innerHTML = `
+      <div style="overflow-x:auto">
+        <table class="users-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Expires</th><th>Action</th></tr></thead>
+          <tbody>${rows.join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } catch(e) { container.innerHTML=`<div class="loader" style="color:var(--red)">Error: ${e.message}</div>`; }
+};
+
+window.grantUser = async (uid) => {
+  try {
+    const cfg = (await getDoc(doc(db,'config','subscription'))).data() || {};
+    const months = cfg.months || 3;
+    const expiry = new Date(); expiry.setMonth(expiry.getMonth()+months);
+    await updateDoc(doc(db,'users',uid), { subscribed:true, plan:'pro', expiresAt:expiry.toISOString(), grantedByAdmin:true });
+    adminToast('✅ Pro granted!');
+    await loadUsers();
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+window.revokeUser = async (uid) => {
+  if(!confirm('Revoke Pro access from this user?')) return;
+  try {
+    await updateDoc(doc(db,'users',uid), { subscribed:false, plan:'free' });
+    adminToast('Pro access revoked');
+    await loadUsers();
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+</script>
+
+<script>
+// ── ADMIN PASSWORD ─────────────────────────────
+// Default password stored in sessionStorage for this session
+// Real password stored in Firebase config
+
+const DEFAULT_PASS = 'wavemeet-admin-2070'; // change this on first login
+
+async function adminLogin(){
+  const pass = document.getElementById('admin-pass').value;
+  if(!pass){ showLoginErr('Enter password.'); return; }
+
+  // Check against Firebase config
+  try {
+    const cfg = await window._fbFns.getDoc(
+      window._fbFns.doc(window._db,'config','admin')
+    );
+    const storedPass = cfg.exists() ? cfg.data().password : DEFAULT_PASS;
+
+    if(pass !== storedPass){ showLoginErr('Incorrect password.'); return; }
+
+    sessionStorage.setItem('wave_admin','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='block';
+    await window.loadAdminData();
+  } catch(e) {
+    // If Firebase not yet configured, use default
+    if(pass === DEFAULT_PASS){
+      sessionStorage.setItem('wave_admin','1');
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('admin-app').style.display='block';
+      window.loadAdminData && window.loadAdminData();
+    } else {
+      showLoginErr('Incorrect password.');
+    }
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem('wave_admin');
+  location.reload();
+}
+
+function showLoginErr(msg){
+  const e = document.getElementById('login-err');
+  e.textContent=msg; e.classList.add('on');
+  setTimeout(()=>e.classList.remove('on'),4000);
+}
+
+window.changeAdminPass = async () => {
+  const np = document.getElementById('new-admin-pass').value;
+  const cp = document.getElementById('confirm-admin-pass').value;
+  if(!np || !cp){ adminToast('Fill in both fields.'); return; }
+  if(np !== cp) { adminToast('Passwords do not match.'); return; }
+  if(np.length < 8){ adminToast('Password must be at least 8 characters.'); return; }
+  try {
+    await window._fbFns.setDoc(
+      window._fbFns.doc(window._db,'config','admin'),
+      { password: np }, { merge:true }
+    );
+    document.getElementById('new-admin-pass').value='';
+    document.getElementById('confirm-admin-pass').value='';
+    adminToast('✅ Admin password updated!');
+  } catch(e) { adminToast('Error: '+e.message); }
+};
+
+// ── TOAST ──────────────────────────────────────
+let _at;
+function adminToast(msg, dur=3000){
+  const e=document.getElementById('admin-toast');
+  e.textContent=msg; e.classList.add('show');
+  clearTimeout(_at); _at=setTimeout(()=>e.classList.remove('show'),dur);
+}
+
+// ── INIT ───────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  // Auto-login if session exists
+  if(sessionStorage.getItem('wave_admin')==='1'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='block';
+    setTimeout(()=>{ window.loadAdminData && window.loadAdminData(); },500);
+  }
+  document.getElementById('admin-pass').addEventListener('keydown',e=>{
+    if(e.key==='Enter') adminLogin();
+  });
+});
+</script>
+</body>
+</html>
