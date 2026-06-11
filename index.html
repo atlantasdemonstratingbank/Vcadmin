@@ -319,7 +319,8 @@ const db    = getFirestore(fbApp);
 window._db  = db;
 window._fb  = { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where };
 
-const DEFAULT_PASS = 'wavemeet-admin-2070';
+const DEFAULT_PASS = "wavemeet-admin-2070";
+const ADMIN_EMAIL = "viccylay30@gmail.com"; // only this email can access admin via Google
 let _allUsers = [];
 
 // ── INIT ──────────────────────────────────────
