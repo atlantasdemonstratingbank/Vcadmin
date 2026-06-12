@@ -6,64 +6,49 @@
 <title>WaveMeet Admin</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
-:root {
-  --bg:#0A0A0F;--s1:#12121A;--s2:#1A1A26;
-  --b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
-  --text:#F0F0FF;--t2:#9090B0;--muted:#505070;
-  --g1:#FF006E;--g2:#8338EC;--g3:#3A86FF;--g4:#06FFB4;--g5:#FFBE0B;
-  --red:#FF4060;--green:#06FFB4;
-}
+:root{--bg:#0A0A0F;--s1:#12121A;--s2:#1A1A26;--b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);--text:#F0F0FF;--t2:#9090B0;--muted:#505070;--g1:#FF006E;--g2:#8338EC;--g3:#3A86FF;--g4:#06FFB4;--g5:#FFBE0B;--red:#FF4060;--green:#06FFB4;}
 html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color:#F0F0FF;font-family:'Space Grotesk',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;max-width:100%;}
 .hidden{display:none!important;}
-
-/* PAGE LOADER */
-#loader{position:fixed;inset:0;z-index:999;background:#0A0A0F;display:flex;align-items:center;justify-content:center;gap:16px;flex-direction:column;}
-#loader.gone{display:none;}
-.lring{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top-color:#3A86FF;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ltxt{font-size:13px;color:#9090B0;font-family:'Space Mono',monospace;}
+
+/* LOADER */
+#page-loader{position:fixed;inset:0;z-index:999;background:#0A0A0F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#page-loader.gone{display:none;}
+.pl-ring{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top-color:#3A86FF;animation:spin 1s linear infinite;}
+.pl-txt{font-size:13px;color:#9090B0;font-family:'Space Mono',monospace;}
 
 /* LOGIN */
 #login-screen{position:fixed;inset:0;z-index:100;background:#0A0A0F;display:flex;align-items:center;justify-content:center;padding:20px;}
 .login-card{background:rgba(18,18,26,.98);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:40px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;}
-.login-logo{width:64px;height:64px;border-radius:16px;object-fit:cover;margin:0 auto 16px;}
+.login-logo{width:64px;height:64px;border-radius:16px;object-fit:cover;margin:0 auto 16px;display:block;}
 .admin-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,190,11,.08);border:1px solid rgba(255,190,11,.25);border-radius:20px;padding:5px 14px;margin-bottom:18px;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;color:#FFBE0B;letter-spacing:.07em;text-transform:uppercase;}
 .login-card h1{font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;}
-.login-card p{font-size:13px;color:#9090B0;margin-bottom:28px;}
-.fl{display:block;font-size:11px;font-weight:700;color:#9090B0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;text-align:left;}
-.fi{display:block;width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:12px 13px;color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:500;outline:none;transition:border-color .2s;-webkit-appearance:none;margin-bottom:14px;}
-.fi:focus{border-color:#3A86FF;}
-.fi::placeholder{color:#505070;}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;border:none;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .15s;}
-.btn-grad{background:linear-gradient(135deg,#8338EC,#FF006E);color:#fff;box-shadow:0 4px 20px rgba(131,56,236,.4);}
-.btn-grad:active{transform:scale(.97);}
+.login-card p{font-size:13px;color:#9090B0;margin-bottom:28px;line-height:1.5;}
 .err{display:none;background:rgba(255,64,96,.1);border:1px solid rgba(255,64,96,.3);border-radius:10px;padding:10px;font-size:13px;color:#FF4060;text-align:center;margin-bottom:12px;}
 .err.on{display:block;}
 
+/* GOOGLE BTN */
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;border-radius:10px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.13);color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;position:relative;}
+.google-btn:hover{background:rgba(255,255,255,.1);}
+.google-btn:disabled{opacity:.6;cursor:not-allowed;}
+.gl{width:20px;height:20px;flex-shrink:0;}
+.btn-spinner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin 1s linear infinite;display:none;flex-shrink:0;}
+.google-btn.loading .btn-spinner{display:block;}
+.google-btn.loading .gl{display:none;}
+.google-btn.loading .btn-txt{opacity:.7;}
+
 /* ADMIN APP */
 #admin-app{display:none;min-height:100vh;}
-
-/* NAV */
 .anav{position:fixed;top:0;left:0;right:0;height:56px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(10,10,15,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.07);}
 .anav-left{display:flex;align-items:center;gap:10px;}
 .anav-logo{width:30px;height:30px;border-radius:8px;object-fit:cover;}
 .anav-name{font-size:16px;font-weight:800;color:#fff;}
 .anav-right{display:flex;align-items:center;gap:8px;}
 .anav-badge{font-size:10px;font-weight:700;font-family:'Space Mono',monospace;color:#FFBE0B;background:rgba(255,190,11,.08);border:1px solid rgba(255,190,11,.2);border-radius:20px;padding:3px 10px;}
+.anav-email{font-size:11px;color:#9090B0;font-family:'Space Mono',monospace;}
 .anav-out{padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.13);background:transparent;color:#9090B0;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
-
-/* BODY */
 .abody{padding:72px 16px 40px;max-width:960px;margin:0 auto;}
-
-/* TABS */
-.tabs{display:flex;gap:4px;background:rgba(18,18,26,.8);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:4px;margin-bottom:20px;overflow-x:auto;}
-.tab{padding:8px 16px;border-radius:8px;border:none;background:transparent;color:#9090B0;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
-.tab.active{background:rgba(131,56,236,.2);color:#fff;border:1px solid rgba(131,56,236,.3);}
-
-/* TAB PANELS */
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
 
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;}
@@ -72,6 +57,13 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
 .stat-value{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.02em;}
 .stat-sub{font-size:11px;color:#9090B0;margin-top:4px;}
 
+/* TABS */
+.tabs{display:flex;gap:4px;background:rgba(18,18,26,.8);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:4px;margin-bottom:20px;overflow-x:auto;}
+.tab{padding:8px 16px;border-radius:8px;border:none;background:transparent;color:#9090B0;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.tab.active{background:rgba(131,56,236,.2);color:#fff;border:1px solid rgba(131,56,236,.3);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
 /* SECTION */
 .sec{background:rgba(18,18,26,.8);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:22px;margin-bottom:14px;}
 .sec-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:10px;}
@@ -79,20 +71,18 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
 .sec-sub{font-size:11px;color:#505070;font-family:'Space Mono',monospace;margin-top:3px;}
 .save-btn{padding:10px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#8338EC,#3A86FF);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .15s;flex-shrink:0;}
 .save-btn:active{transform:scale(.97);}
-.save-btn.danger{background:linear-gradient(135deg,#FF4060,#FF0040);}
 
 /* FORM */
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .frow.single{grid-template-columns:1fr;}
 .field{display:flex;flex-direction:column;gap:5px;}
 .field label{font-size:10px;font-weight:700;color:#9090B0;text-transform:uppercase;letter-spacing:.08em;font-family:'Space Mono',monospace;}
-.field input,.field select,.field textarea{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 12px;color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;outline:none;transition:border-color .2s;-webkit-appearance:none;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:#3A86FF;}
+.field input,.field select{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 12px;color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.field input:focus,.field select:focus{border-color:#3A86FF;}
 .field input::placeholder{color:#505070;}
 .field select option{background:#1A1A26;color:#F0F0FF;}
-.field textarea{resize:vertical;min-height:80px;}
 
-/* ACCOUNT ITEMS */
+/* ACCOUNTS */
 .acc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .acc-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;}
 .acc-dot{width:8px;height:8px;border-radius:50%;background:#06FFB4;flex-shrink:0;}
@@ -101,61 +91,53 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
 .acc-user{font-size:11px;color:#505070;font-family:'Space Mono',monospace;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .acc-del{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,64,96,.3);background:rgba(255,64,96,.08);color:#FF4060;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 
-/* USERS TABLE */
-.tbl-wrap{overflow-x:auto;}
-.tbl{width:100%;border-collapse:collapse;min-width:500px;}
-.tbl th{font-size:10px;font-weight:700;color:#505070;text-transform:uppercase;letter-spacing:.08em;font-family:'Space Mono',monospace;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07);}
-.tbl td{padding:12px 10px;font-size:13px;color:#9090B0;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle;}
-.tbl tr:last-child td{border-bottom:none;}
-.tbl .name-cell{color:#fff;font-weight:600;}
-.plan-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;}
-.plan-free{background:rgba(255,255,255,.06);color:#505070;}
-.plan-pro{background:rgba(131,56,236,.15);color:#8338EC;border:1px solid rgba(131,56,236,.3);}
-.act-btn{padding:5px 12px;border-radius:7px;border:none;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;margin-right:4px;}
-.act-revoke{background:rgba(255,64,96,.1);color:#FF4060;border:1px solid rgba(255,64,96,.25);}
-.act-grant{background:rgba(131,56,236,.1);color:#8338EC;border:1px solid rgba(131,56,236,.25);}
-.act-delete{background:rgba(255,64,96,.05);color:#505070;border:1px solid rgba(255,255,255,.07);}
-
-/* SEARCH */
+/* USERS */
 .search-row{display:flex;gap:8px;margin-bottom:14px;}
 .search-input{flex:1;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 13px;color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;}
 .search-input:focus{border-color:#3A86FF;}
 .search-input::placeholder{color:#505070;}
 .refresh-btn{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.05);color:#9090B0;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-
-/* LOADER */
-.loader{display:flex;align-items:center;justify-content:center;padding:32px;color:#505070;font-size:13px;font-family:'Space Mono',monospace;}
-
-/* SUCCESS */
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;min-width:500px;}
+.tbl th{font-size:10px;font-weight:700;color:#505070;text-transform:uppercase;letter-spacing:.08em;font-family:'Space Mono',monospace;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07);}
+.tbl td{padding:12px 10px;font-size:13px;color:#9090B0;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl .nc{color:#fff;font-weight:600;}
+.plan-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;}
+.plan-free{background:rgba(255,255,255,.06);color:#505070;}
+.plan-pro{background:rgba(131,56,236,.15);color:#8338EC;border:1px solid rgba(131,56,236,.3);}
+.act-btn{padding:5px 12px;border-radius:7px;border:none;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-right:4px;transition:all .15s;}
+.act-grant{background:rgba(131,56,236,.1);color:#8338EC;border:1px solid rgba(131,56,236,.25);}
+.act-revoke{background:rgba(255,64,96,.1);color:#FF4060;border:1px solid rgba(255,64,96,.25);}
 .suc{display:none;background:rgba(6,255,180,.08);border:1px solid rgba(6,255,180,.25);border-radius:10px;padding:10px;font-size:13px;color:#06FFB4;text-align:center;margin-bottom:12px;}
 .suc.on{display:block;}
+.loader{display:flex;align-items:center;justify-content:center;padding:32px;color:#505070;font-size:13px;font-family:'Space Mono',monospace;}
 
 /* TOAST */
 #atst{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(26,26,38,.97);border:1px solid rgba(255,255,255,.13);color:#fff;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;}
 #atst.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-@media(max-width:600px){
-  .frow{grid-template-columns:1fr;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-}
+@media(max-width:600px){.frow{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
 <div id="atst"></div>
-<div id="loader"><div class="lring"></div><div class="ltxt">Loading…</div></div>
+<div id="page-loader"><div class="pl-ring"></div><div class="pl-txt">Loading admin…</div></div>
 
-<!-- LOGIN -->
+<!-- LOGIN — Google only -->
 <div id="login-screen" class="hidden">
   <div class="login-card">
     <img class="login-logo" src="https://i.ibb.co/rRRSr4kH/IMG-0734.jpg" onerror="this.style.display='none'" />
     <div class="admin-badge">⚙️ Admin Panel</div>
     <h1>WaveMeet Admin</h1>
-    <p>Restricted access. Enter your password.</p>
-    <label class="fl">Admin password</label>
-    <input class="fi" type="password" id="admin-pass" placeholder="Enter password" />
+    <p>Sign in with the authorised admin Google account to access the panel.</p>
     <div class="err" id="login-err"></div>
-    <button class="btn btn-grad" onclick="adminLogin()">Access Panel</button>
+    <button class="google-btn" id="google-login-btn" onclick="adminGoogleLogin()">
+      <div class="btn-spinner"></div>
+      <svg class="gl" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span class="btn-txt">Sign in with Google</span>
+    </button>
   </div>
 </div>
 
@@ -168,13 +150,12 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
     </div>
     <div class="anav-right">
       <div class="anav-badge">⚙️ ADMIN</div>
-      <button class="anav-out" onclick="adminLogout()">Sign out</button>
+      <span class="anav-email" id="admin-email-display"></span>
+      <button class="anav-out" onclick="adminSignOut()">Sign out</button>
     </div>
   </nav>
 
   <div class="abody">
-
-    <!-- STATS -->
     <div class="stats-row">
       <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="st-total">—</div><div class="stat-sub">registered</div></div>
       <div class="stat-card"><div class="stat-label">Pro Users</div><div class="stat-value" id="st-pro">—</div><div class="stat-sub">active subs</div></div>
@@ -182,19 +163,17 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
       <div class="stat-card"><div class="stat-label">TURN Accounts</div><div class="stat-value" id="st-turn">—</div><div class="stat-sub">active relays</div></div>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
       <button class="tab active" onclick="switchTab('users')">👥 Users</button>
       <button class="tab" onclick="switchTab('subscription')">💳 Subscription</button>
       <button class="tab" onclick="switchTab('turn')">📡 TURN Servers</button>
-      <button class="tab" onclick="switchTab('security')">🔑 Security</button>
     </div>
 
-    <!-- USERS TAB -->
+    <!-- USERS -->
     <div class="tab-panel active" id="tab-users">
       <div class="sec">
         <div class="sec-header">
-          <div><div class="sec-title">All Users</div><div class="sec-sub">// manage subscriptions manually</div></div>
+          <div><div class="sec-title">All Users</div><div class="sec-sub">// manage subscriptions</div></div>
           <button class="refresh-btn" onclick="loadUsers()">↻ Refresh</button>
         </div>
         <div class="search-row">
@@ -203,26 +182,25 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
         <div id="users-container"><div class="loader">Loading users…</div></div>
       </div>
 
-      <!-- Manual grant -->
       <div class="sec">
         <div class="sec-header">
-          <div><div class="sec-title">Manual Pro Grant</div><div class="sec-sub">// give pro access by email</div></div>
+          <div><div class="sec-title">Manual Pro Grant</div><div class="sec-sub">// give pro by email if payment fails</div></div>
           <button class="save-btn" onclick="manualGrant()">Grant Pro</button>
         </div>
         <div class="frow">
           <div class="field"><label>User email</label><input type="email" id="grant-email" placeholder="user@email.com" /></div>
-          <div class="field"><label>Duration (months)</label><input type="number" id="grant-months" placeholder="3" min="1" max="24" /></div>
+          <div class="field"><label>Months</label><input type="number" id="grant-months" placeholder="3" min="1" max="24" /></div>
         </div>
         <div class="suc" id="grant-suc"></div>
         <div class="err" id="grant-err"></div>
       </div>
     </div>
 
-    <!-- SUBSCRIPTION TAB -->
+    <!-- SUBSCRIPTION -->
     <div class="tab-panel" id="tab-subscription">
       <div class="sec">
         <div class="sec-header">
-          <div><div class="sec-title">Subscription Settings</div><div class="sec-sub">// price, currency, duration</div></div>
+          <div><div class="sec-title">Subscription Settings</div><div class="sec-sub">// price · currency · duration</div></div>
           <button class="save-btn" onclick="saveSubConfig()">Save</button>
         </div>
         <div class="frow">
@@ -243,17 +221,17 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
           <div class="field"><label>Free call limit (seconds)</label><input type="number" id="cfg-free-limit" placeholder="30" min="10" /></div>
         </div>
         <div class="frow single">
-          <div class="field"><label>Flutterwave Public Key</label><input type="text" id="cfg-fw-key" placeholder="FLWPUBK_TEST-…" /></div>
+          <div class="field"><label>Flutterwave Public Key</label><input type="text" id="cfg-fw-key" placeholder="FLWPUBK-…" /></div>
         </div>
         <div class="suc" id="cfg-suc"></div>
       </div>
     </div>
 
-    <!-- TURN TAB -->
+    <!-- TURN -->
     <div class="tab-panel" id="tab-turn">
       <div class="sec">
         <div class="sec-header">
-          <div><div class="sec-title">TURN Server Accounts</div><div class="sec-sub">// add multiple Metered accounts — rotates automatically</div></div>
+          <div><div class="sec-title">TURN Server Accounts</div><div class="sec-sub">// add multiple Metered accounts — rotates to extend monthly limit</div></div>
         </div>
         <div class="acc-list" id="acc-list"><div class="loader">Loading…</div></div>
         <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:16px;margin-top:4px;">
@@ -269,105 +247,80 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
         </div>
       </div>
     </div>
-
-    <!-- SECURITY TAB -->
-    <div class="tab-panel" id="tab-security">
-      <div class="sec">
-        <div class="sec-header">
-          <div><div class="sec-title">Change Admin Password</div><div class="sec-sub">// update your panel password</div></div>
-          <button class="save-btn" onclick="changePass()">Update</button>
-        </div>
-        <div class="frow">
-          <div class="field"><label>New password</label><input type="password" id="new-pass" placeholder="Min 8 characters" /></div>
-          <div class="field"><label>Confirm password</label><input type="password" id="confirm-pass" placeholder="Repeat password" /></div>
-        </div>
-        <div class="suc" id="pass-suc"></div>
-        <div class="err" id="pass-err"></div>
-      </div>
-
-      <div class="sec">
-        <div class="sec-header">
-          <div><div class="sec-title">Firebase Config</div><div class="sec-sub">// current project details</div></div>
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:12px;color:#505070;line-height:2;">
-          Project ID: <span style="color:#9090B0">wave-220b6</span><br>
-          Auth Domain: <span style="color:#9090B0">wave-220b6.firebaseapp.com</span><br>
-          Status: <span style="color:#06FFB4">● Connected</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const FB = {
-  apiKey:"AIzaSyCduZGxLq_pwSE2BustK4Z5suKV83vdknw",
-  authDomain:"wave-220b6.firebaseapp.com",
-  projectId:"wave-220b6",
-  storageBucket:"wave-220b6.firebasestorage.app",
-  messagingSenderId:"634835256647",
-  appId:"1:634835256647:web:fcfc069523a81d2bdaf862"
-};
+const ADMIN_EMAIL = 'viccylay30@gmail.com';
 
+const FB = { apiKey:"AIzaSyCduZGxLq_pwSE2BustK4Z5suKV83vdknw", authDomain:"wave-220b6.firebaseapp.com", projectId:"wave-220b6", storageBucket:"wave-220b6.firebasestorage.app", messagingSenderId:"634835256647", appId:"1:634835256647:web:fcfc069523a81d2bdaf862" };
 const fbApp = initializeApp(FB, 'admin');
+const auth  = getAuth(fbApp);
 const db    = getFirestore(fbApp);
-window._db  = db;
-window._fb  = { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where };
+const gProv = new GoogleAuthProvider();
 
-const DEFAULT_PASS = "wavemeet-admin-2070";
-const ADMIN_EMAIL = "viccylay30@gmail.com"; // only this email can access admin via Google
 let _allUsers = [];
 
-// ── INIT ──────────────────────────────────────
-window.adminInit = async () => {
-  // Check stored session
-  const sess = sessionStorage.getItem('wm_admin');
-  const loader = document.getElementById('loader');
-  if(sess === '1') {
+// ── AUTH STATE ──────────────────────────────
+onAuthStateChanged(auth, async user => {
+  const loader = document.getElementById('page-loader');
+  if (user) {
+    if (user.email !== ADMIN_EMAIL) {
+      // Wrong account — sign out immediately
+      await signOut(auth);
+      loader.classList.add('gone');
+      document.getElementById('login-screen').classList.remove('hidden');
+      showLoginErr('Access denied. Only the authorised admin account can sign in.');
+      return;
+    }
+    // Correct admin account
     loader.classList.add('gone');
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-app').style.display = 'block';
+    document.getElementById('admin-email-display').textContent = user.email;
     await loadAll();
   } else {
     loader.classList.add('gone');
     document.getElementById('login-screen').classList.remove('hidden');
   }
-};
+});
 
-window.adminLogin = async () => {
-  const pass = document.getElementById('admin-pass').value;
-  if(!pass) { showErr('login-err','Enter password.'); return; }
+window.adminGoogleLogin = async () => {
+  const btn = document.getElementById('google-login-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
   try {
-    const cfgSnap = await getDoc(doc(db,'config','admin'));
-    const stored  = cfgSnap.exists() ? cfgSnap.data().password : DEFAULT_PASS;
-    if(pass !== stored) { showErr('login-err','Incorrect password.'); return; }
-    sessionStorage.setItem('wm_admin','1');
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('admin-app').style.display = 'block';
-    await loadAll();
+    await signInWithPopup(auth, gProv);
+    // onAuthStateChanged handles routing
   } catch(e) {
-    // Firebase error — try default
-    if(pass === DEFAULT_PASS) {
-      sessionStorage.setItem('wm_admin','1');
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('admin-app').style.display = 'block';
-      await loadAll();
-    } else { showErr('login-err','Incorrect password.'); }
+    if (e.code !== 'auth/popup-closed-by-user') {
+      showLoginErr(e.message);
+    }
+    btn.classList.remove('loading');
+    btn.disabled = false;
   }
 };
 
-window.adminLogout = () => { sessionStorage.removeItem('wm_admin'); location.reload(); };
+window.adminSignOut = async () => {
+  await signOut(auth);
+};
 
+function showLoginErr(msg) {
+  const e = document.getElementById('login-err');
+  e.textContent = msg; e.classList.add('on');
+  setTimeout(() => e.classList.remove('on'), 6000);
+}
+
+// ── LOAD ALL ────────────────────────────────
 async function loadAll() {
   await Promise.all([loadConfig(), loadAccounts(), loadUsers()]);
 }
 
-// ── CONFIG ────────────────────────────────────
+// ── CONFIG ──────────────────────────────────
 window.loadConfig = async () => {
   try {
     const snap = await getDoc(doc(db,'config','subscription'));
@@ -382,21 +335,20 @@ window.loadConfig = async () => {
 
 window.saveSubConfig = async () => {
   try {
-    const data = {
+    await setDoc(doc(db,'config','subscription'), {
       price:      parseFloat(document.getElementById('cfg-price').value) || 0,
       currency:   document.getElementById('cfg-currency').value,
       months:     parseInt(document.getElementById('cfg-months').value) || 3,
       freeLimit:  parseInt(document.getElementById('cfg-free-limit').value) || 30,
       fwPublicKey: document.getElementById('cfg-fw-key').value.trim(),
       updatedAt:  new Date().toISOString()
-    };
-    await setDoc(doc(db,'config','subscription'), data, { merge:true });
+    }, { merge:true });
     showSuc('cfg-suc','✅ Settings saved!');
     atoast('Subscription settings updated');
   } catch(e) { atoast('Error: '+e.message); }
 };
 
-// ── TURN ACCOUNTS ─────────────────────────────
+// ── TURN ────────────────────────────────────
 window.loadAccounts = async () => {
   try {
     const snap = await getDocs(collection(db,'turnAccounts'));
@@ -405,17 +357,9 @@ window.loadAccounts = async () => {
     if(snap.empty){ list.innerHTML='<div class="loader" style="color:#505070">No accounts — add one below</div>'; return; }
     list.innerHTML='';
     snap.forEach(d => {
-      const a = d.data();
-      const el = document.createElement('div');
-      el.className='acc-item';
-      el.innerHTML=`
-        <div class="acc-dot"></div>
-        <div class="acc-info">
-          <div class="acc-name">${a.name||'Unnamed'}</div>
-          <div class="acc-user">User: ${a.username}</div>
-        </div>
-        <button class="acc-del" onclick="deleteAccount('${d.id}')">Remove</button>
-      `;
+      const a=d.data();
+      const el=document.createElement('div'); el.className='acc-item';
+      el.innerHTML=`<div class="acc-dot"></div><div class="acc-info"><div class="acc-name">${a.name||'Unnamed'}</div><div class="acc-user">User: ${a.username}</div></div><button class="acc-del" onclick="deleteAccount('${d.id}')">Remove</button>`;
       list.appendChild(el);
     });
   } catch(e) { atoast('Error loading accounts'); }
@@ -431,8 +375,7 @@ window.addAccount = async () => {
     document.getElementById('nacc-name').value='';
     document.getElementById('nacc-user').value='';
     document.getElementById('nacc-pass').value='';
-    atoast('✅ Account added!');
-    await loadAccounts();
+    atoast('✅ Account added!'); await loadAccounts();
   } catch(e) { atoast('Error: '+e.message); }
 };
 
@@ -442,144 +385,101 @@ window.deleteAccount = async (id) => {
   catch(e) { atoast('Error: '+e.message); }
 };
 
-// ── USERS ─────────────────────────────────────
+// ── USERS ────────────────────────────────────
 window.loadUsers = async () => {
   const cont = document.getElementById('users-container');
   cont.innerHTML='<div class="loader">Loading users…</div>';
   try {
     const snap = await getDocs(collection(db,'users'));
-    _allUsers = [];
-    let total=0, pro=0, free=0;
+    _allUsers=[]; let total=0,pro=0,free=0;
     snap.forEach(d => {
       total++;
-      const u = { id:d.id, ...d.data() };
-      const isPro = u.subscribed && u.expiresAt && new Date(u.expiresAt) > new Date();
-      if(isPro) pro++; else free++;
-      _allUsers.push({ ...u, _isPro: isPro });
+      const u={id:d.id,...d.data()};
+      const isPro=u.subscribed&&u.expiresAt&&new Date(u.expiresAt)>new Date();
+      if(isPro)pro++;else free++;
+      _allUsers.push({...u,_isPro:isPro});
     });
-    document.getElementById('st-total').textContent = total;
-    document.getElementById('st-pro').textContent   = pro;
-    document.getElementById('st-free').textContent  = free;
+    document.getElementById('st-total').textContent=total;
+    document.getElementById('st-pro').textContent=pro;
+    document.getElementById('st-free').textContent=free;
     renderUsers(_allUsers);
-  } catch(e) {
-    cont.innerHTML=`<div class="loader" style="color:#FF4060">Error loading users: ${e.message}</div>`;
-  }
+  } catch(e) { cont.innerHTML=`<div class="loader" style="color:#FF4060">Error: ${e.message}</div>`; }
 };
 
 function renderUsers(users) {
-  const cont = document.getElementById('users-container');
+  const cont=document.getElementById('users-container');
   if(!users.length){ cont.innerHTML='<div class="loader" style="color:#505070">No users found</div>'; return; }
-  const rows = users.map(u => {
-    const expiry = u.expiresAt ? new Date(u.expiresAt).toLocaleDateString() : '—';
-    return `
-      <tr>
-        <td class="name-cell">${u.name||u.email?.split('@')[0]||'Unknown'}</td>
-        <td>${u.email||'—'}</td>
-        <td><span class="plan-badge ${u._isPro?'plan-pro':'plan-free'}">${u._isPro?'PRO':'FREE'}</span></td>
-        <td>${u._isPro?expiry:'—'}</td>
-        <td>
-          ${u._isPro
-            ? `<button class="act-btn act-revoke" onclick="revokeUser('${u.id}','${u.name||u.email||''}')">Revoke</button>`
-            : `<button class="act-btn act-grant" onclick="grantUserById('${u.id}','${u.name||u.email||''}')">Grant Pro</button>`
-          }
-        </td>
-      </tr>
-    `;
+  const rows=users.map(u=>{
+    const exp=u.expiresAt?new Date(u.expiresAt).toLocaleDateString():'—';
+    return `<tr>
+      <td class="nc">${u.name||u.email?.split('@')[0]||'Unknown'}</td>
+      <td>${u.email||'—'}</td>
+      <td><span class="plan-badge ${u._isPro?'plan-pro':'plan-free'}">${u._isPro?'PRO':'FREE'}</span></td>
+      <td>${u._isPro?exp:'—'}</td>
+      <td>${u._isPro
+        ?`<button class="act-btn act-revoke" onclick="revokeUser('${u.id}','${u.name||u.email||''}')">Revoke</button>`
+        :`<button class="act-btn act-grant" onclick="grantUserById('${u.id}','${u.name||u.email||''}')">Grant Pro</button>`
+      }</td>
+    </tr>`;
   });
   cont.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Expires</th><th>Action</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
 }
 
 window.filterUsers = () => {
-  const q = document.getElementById('user-search').value.toLowerCase();
-  if(!q){ renderUsers(_allUsers); return; }
-  renderUsers(_allUsers.filter(u =>
-    (u.name||'').toLowerCase().includes(q) ||
-    (u.email||'').toLowerCase().includes(q)
-  ));
+  const q=document.getElementById('user-search').value.toLowerCase();
+  renderUsers(!q ? _allUsers : _allUsers.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)));
 };
 
-window.grantUserById = async (uid, name) => {
-  const months = parseInt(prompt(`Grant Pro to ${name}?\nHow many months?`, '3'));
-  if(!months || isNaN(months)) return;
+window.grantUserById = async (uid,name) => {
+  const months=parseInt(prompt(`Grant Pro to ${name}?\nHow many months?`,'3'));
+  if(!months||isNaN(months))return;
   try {
-    const expiry = new Date(); expiry.setMonth(expiry.getMonth() + months);
-    await updateDoc(doc(db,'users',uid), { subscribed:true, plan:'pro', expiresAt:expiry.toISOString(), grantedByAdmin:true, grantedAt:new Date().toISOString() });
-    atoast(`✅ Pro granted to ${name} for ${months} months`);
-    await loadUsers();
-  } catch(e) { atoast('Error: '+e.message); }
+    const exp=new Date(); exp.setMonth(exp.getMonth()+months);
+    await updateDoc(doc(db,'users',uid),{subscribed:true,plan:'pro',expiresAt:exp.toISOString(),grantedByAdmin:true,grantedAt:new Date().toISOString()});
+    atoast(`✅ Pro granted to ${name}`); await loadUsers();
+  } catch(e){atoast('Error: '+e.message);}
 };
 
-window.revokeUser = async (uid, name) => {
-  if(!confirm(`Revoke Pro from ${name}?`)) return;
+window.revokeUser = async (uid,name) => {
+  if(!confirm(`Revoke Pro from ${name}?`))return;
   try {
-    await updateDoc(doc(db,'users',uid), { subscribed:false, plan:'free', revokedAt:new Date().toISOString() });
-    atoast(`Pro revoked from ${name}`);
-    await loadUsers();
-  } catch(e) { atoast('Error: '+e.message); }
+    await updateDoc(doc(db,'users',uid),{subscribed:false,plan:'free',revokedAt:new Date().toISOString()});
+    atoast(`Pro revoked from ${name}`); await loadUsers();
+  } catch(e){atoast('Error: '+e.message);}
 };
 
-// Manual grant by email
 window.manualGrant = async () => {
-  const email  = document.getElementById('grant-email').value.trim();
-  const months = parseInt(document.getElementById('grant-months').value) || 3;
-  if(!email){ showErr('grant-err','Enter an email.'); return; }
+  const email=document.getElementById('grant-email').value.trim();
+  const months=parseInt(document.getElementById('grant-months').value)||3;
+  if(!email){showErr2('grant-err','Enter an email.');return;}
   try {
-    // Find user by email
-    const snap = await getDocs(query(collection(db,'users'), where('email','==',email)));
-    if(snap.empty){ showErr('grant-err','No user found with that email.'); return; }
-    const expiry = new Date(); expiry.setMonth(expiry.getMonth() + months);
-    const uid = snap.docs[0].id;
-    await updateDoc(doc(db,'users',uid), { subscribed:true, plan:'pro', expiresAt:expiry.toISOString(), grantedByAdmin:true, grantedAt:new Date().toISOString() });
+    const snap=await getDocs(query(collection(db,'users'),where('email','==',email)));
+    if(snap.empty){showErr2('grant-err','No user found with that email.');return;}
+    const exp=new Date(); exp.setMonth(exp.getMonth()+months);
+    await updateDoc(doc(db,'users',snap.docs[0].id),{subscribed:true,plan:'pro',expiresAt:exp.toISOString(),grantedByAdmin:true,grantedAt:new Date().toISOString()});
     document.getElementById('grant-email').value='';
     showSuc('grant-suc',`✅ Pro granted to ${email} for ${months} months`);
     await loadUsers();
-  } catch(e) { showErr('grant-err','Error: '+e.message); }
+  } catch(e){showErr2('grant-err','Error: '+e.message);}
 };
 
-// ── SECURITY ──────────────────────────────────
-window.changePass = async () => {
-  const np = document.getElementById('new-pass').value;
-  const cp = document.getElementById('confirm-pass').value;
-  if(!np||!cp){ showErr('pass-err','Fill in both fields.'); return; }
-  if(np !== cp){ showErr('pass-err','Passwords do not match.'); return; }
-  if(np.length < 8){ showErr('pass-err','Min 8 characters.'); return; }
-  try {
-    await setDoc(doc(db,'config','admin'), { password:np, updatedAt:new Date().toISOString() }, { merge:true });
-    document.getElementById('new-pass').value='';
-    document.getElementById('confirm-pass').value='';
-    showSuc('pass-suc','✅ Password updated!');
-    atoast('Admin password changed');
-  } catch(e) { showErr('pass-err','Error: '+e.message); }
-};
-
-// Init
-window.adminInit();
+function showErr2(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),6000);}
+function showSuc(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),6000);}
+window.showSuc=showSuc;
 </script>
 
 <script>
-// ── TABS ──────────────────────────────────────
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const tabs = ['users','subscription','turn','security'];
-    t.classList.toggle('active', tabs[i]===name);
-  });
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+function switchTab(name){
+  const tabs=['users','subscription','turn'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name)?.classList.add('active');
 }
-window.switchTab = switchTab;
-
-// ── HELPERS ───────────────────────────────────
-function showErr(id,msg){ const e=document.getElementById(id); if(!e)return; e.textContent=msg; e.classList.add('on'); setTimeout(()=>e.classList.remove('on'),6000); }
-function showSuc(id,msg){ const e=document.getElementById(id); if(!e)return; e.textContent=msg; e.classList.add('on'); setTimeout(()=>e.classList.remove('on'),5000); }
-window.showErr=showErr;
+window.switchTab=switchTab;
 
 let _at;
-function atoast(msg,dur=3000){ const e=document.getElementById('atst'); e.textContent=msg; e.classList.add('show'); clearTimeout(_at); _at=setTimeout(()=>e.classList.remove('show'),dur); }
-
-// Enter key on admin password
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('admin-pass')?.addEventListener('keydown',e=>{ if(e.key==='Enter') window.adminLogin?.(); });
-});
+function atoast(msg,dur=3000){const e=document.getElementById('atst');e.textContent=msg;e.classList.add('show');clearTimeout(_at);_at=setTimeout(()=>e.classList.remove('show'),dur);}
+window.atoast=atoast;
 </script>
 </body>
 </html>
