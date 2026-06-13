@@ -165,7 +165,10 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
 
     <div class="tabs">
       <button class="tab active" onclick="switchTab('users')">👥 Users</button>
-      <button class="tab" onclick="switchTab('subscription')">💳 Subscription</button>
+      <button class="tab" onclick="switchTab('payments')">💰 Payments</button>
+      <button class="tab" onclick="switchTab('subscription')">⚙️ Subscription</button>
+      <button class="tab" onclick="switchTab('features')">🎛️ Features</button>
+      <button class="tab" onclick="switchTab('maintenance')">🔧 Maintenance</button>
       <button class="tab" onclick="switchTab('turn')">📡 TURN Servers</button>
     </div>
 
@@ -193,6 +196,17 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
         </div>
         <div class="suc" id="grant-suc"></div>
         <div class="err" id="grant-err"></div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="tab-panel" id="tab-payments">
+      <div class="sec">
+        <div class="sec-header">
+          <div><div class="sec-title">Payment History</div><div class="sec-sub">// all successful payments</div></div>
+          <button class="refresh-btn" onclick="loadPayments()">↻ Refresh</button>
+        </div>
+        <div id="payments-container"><div class="loader">Loading payments…</div></div>
       </div>
     </div>
 
@@ -224,6 +238,146 @@ html,body{margin:0;padding:0;width:100%;min-height:100%;background:#0A0A0F;color
           <div class="field"><label>Flutterwave Public Key</label><input type="text" id="cfg-fw-key" placeholder="FLWPUBK-…" /></div>
         </div>
         <div class="suc" id="cfg-suc"></div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="tab-panel" id="tab-features">
+
+      <!-- Global subscription toggle -->
+      <div class="sec">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">💳 Subscription System</div>
+            <div class="sec-sub">// turn subscriptions on or off globally</div>
+          </div>
+          <button class="save-btn" onclick="saveFeatures()">Save All</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#fff;">Enable Subscriptions</div>
+            <div style="font-size:12px;color:#505070;margin-top:3px;">When OFF — all users get unlimited calls for free</div>
+          </div>
+          <div class="tog" id="feat-subs-tog" onclick="toggleFeatTog('feat-subs-tog','subscriptionsEnabled')">
+            <div class="tok"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Free plan features -->
+      <div class="sec">
+        <div class="sec-header">
+          <div><div class="sec-title">🆓 Free Plan Features</div><div class="sec-sub">// what free users can access</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Video File Upload</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">Allow free users to use uploaded video as camera</div>
+            </div>
+            <div class="tog" id="feat-free-video-tog" onclick="toggleFeatTog('feat-free-video-tog','freeVideoFile')">
+              <div class="tok"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Lag Mode Prank</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">Allow free users to use lag mode</div>
+            </div>
+            <div class="tog" id="feat-free-lag-tog" onclick="toggleFeatTog('feat-free-lag-tog','freeLagMode')">
+              <div class="tok"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Background Sound</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">Allow free users to add background sound</div>
+            </div>
+            <div class="tog" id="feat-free-bgsound-tog" onclick="toggleFeatTog('feat-free-bgsound-tog','freeBgSound')">
+              <div class="tok"></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="field">
+            <label>Free call time limit (seconds) — 0 = unlimited</label>
+            <input type="number" id="feat-free-limit" placeholder="30" min="0" max="3600" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro plan features -->
+      <div class="sec">
+        <div class="sec-header">
+          <div><div class="sec-title">⭐ Pro Plan Features</div><div class="sec-sub">// what pro users can access</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Unlimited Call Time</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">No time limit for pro users</div>
+            </div>
+            <div class="tog on" id="feat-pro-unlimited-tog" onclick="toggleFeatTog('feat-pro-unlimited-tog','proUnlimited')">
+              <div class="tok"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Virtual Camera (Video File)</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">Pro users can use uploaded video as camera</div>
+            </div>
+            <div class="tog on" id="feat-pro-video-tog" onclick="toggleFeatTog('feat-pro-video-tog','proVideoFile')">
+              <div class="tok"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Lag Mode + Background Sound</div>
+              <div style="font-size:11px;color:#505070;margin-top:2px;">Pro users can use prank and audio features</div>
+            </div>
+            <div class="tog on" id="feat-pro-extras-tog" onclick="toggleFeatTog('feat-pro-extras-tog','proExtras')">
+              <div class="tok"></div>
+            </div>
+          </div>
+        </div>
+        <div class="suc" id="feat-suc"></div>
+      </div>
+    </div>
+
+    <!-- MAINTENANCE -->
+    <div class="tab-panel" id="tab-maintenance">
+      <div class="sec">
+        <div class="sec-header">
+          <div><div class="sec-title">🔧 Maintenance Mode</div><div class="sec-sub">// when ON — users see a maintenance screen instead of the app</div></div>
+          <button class="save-btn" id="maint-save-btn" onclick="saveMaintenance()">Save</button>
+        </div>
+
+        <!-- Big toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,64,96,.06);border:1px solid rgba(255,64,96,.2);border-radius:14px;padding:20px;margin-bottom:16px;">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:#fff;">Maintenance Mode</div>
+            <div style="font-size:13px;color:#FF4060;margin-top:4px;" id="maint-status-txt">Currently OFF — app is live</div>
+          </div>
+          <div class="tog" id="maint-tog" onclick="toggleMaint()"><div class="tok"></div></div>
+        </div>
+
+        <!-- Message editor -->
+        <div class="field" style="margin-bottom:16px;">
+          <label>Message shown to users during maintenance</label>
+          <textarea id="maint-message" rows="4" style="background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:12px;color:#F0F0FF;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;resize:vertical;width:100%;" placeholder="We are performing scheduled maintenance and will be back shortly. Thank you for your patience! 🚀"></textarea>
+        </div>
+
+        <!-- Preview -->
+        <div style="background:#0A0A0F;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:32px;text-align:center;">
+          <div style="font-size:11px;color:#505070;font-family:monospace;margin-bottom:16px;text-transform:uppercase;letter-spacing:.1em;">Preview — what users will see</div>
+          <div style="font-size:48px;margin-bottom:14px;">🔧</div>
+          <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">Under Maintenance</div>
+          <div style="font-size:14px;color:#9090B0;line-height:1.7;" id="maint-preview-txt">We are performing scheduled maintenance and will be back shortly.</div>
+          <div style="margin-top:20px;font-size:12px;color:#505070;font-family:monospace;">WaveMeet · Back soon 🚀</div>
+        </div>
+
+        <div class="suc" id="maint-suc"></div>
+        <div class="err" id="maint-err"></div>
       </div>
     </div>
 
@@ -319,6 +473,155 @@ function showLoginErr(msg) {
 async function loadAll() {
   await Promise.all([loadConfig(), loadAccounts(), loadUsers()]);
 }
+
+// ── FEATURES ─────────────────────────────────
+let _featState = {};
+
+window.loadFeatures = async () => {
+  try {
+    const snap = await getDoc(doc(db,'config','features'));
+    const feat = snap.exists() ? snap.data() : {};
+    _featState = feat;
+    // Apply toggles
+    setTog('feat-subs-tog',        feat.subscriptionsEnabled !== false);
+    setTog('feat-free-video-tog',  feat.freeVideoFile !== false);
+    setTog('feat-free-lag-tog',    feat.freeLagMode !== false);
+    setTog('feat-free-bgsound-tog',feat.freeBgSound !== false);
+    setTog('feat-pro-unlimited-tog',feat.proUnlimited !== false);
+    setTog('feat-pro-video-tog',   feat.proVideoFile !== false);
+    setTog('feat-pro-extras-tog',  feat.proExtras !== false);
+    document.getElementById('feat-free-limit').value = feat.freeCallLimit ?? 30;
+  } catch(e) { atoast('Could not load features config'); }
+};
+
+window.toggleFeatTog = (id, key) => {
+  const el = document.getElementById(id);
+  const isOn = el.classList.toggle('on');
+  _featState[key] = isOn;
+};
+
+window.saveFeatures = async () => {
+  try {
+    _featState.freeCallLimit = parseInt(document.getElementById('feat-free-limit').value) || 30;
+    await setDoc(doc(db,'config','features'), _featState, { merge:true });
+    // Also update subscription config freeLimit for backward compat
+    await setDoc(doc(db,'config','subscription'), { freeLimit: _featState.freeCallLimit }, { merge:true });
+    showSuc('feat-suc','✅ Features saved! Changes take effect on next page load.');
+    atoast('Features updated');
+  } catch(e) { atoast('Error: '+e.message); }
+};
+
+// ── MAINTENANCE ───────────────────────────────
+let _maintEnabled = false;
+
+window.loadMaintenance = async () => {
+  try {
+    const snap = await getDoc(doc(db,'config','maintenance'));
+    const m = snap.exists() ? snap.data() : {};
+    _maintEnabled = m.enabled || false;
+    setTog('maint-tog', _maintEnabled);
+    updateMaintStatus();
+    if (m.message) {
+      document.getElementById('maint-message').value = m.message;
+      document.getElementById('maint-preview-txt').textContent = m.message;
+    }
+  } catch(e) {}
+};
+
+window.toggleMaint = () => {
+  _maintEnabled = !_maintEnabled;
+  setTog('maint-tog', _maintEnabled);
+  updateMaintStatus();
+};
+
+function updateMaintStatus() {
+  const txt = document.getElementById('maint-status-txt');
+  const btn = document.getElementById('maint-save-btn');
+  if (_maintEnabled) {
+    txt.textContent = '⚠️ Currently ON — users cannot access the app';
+    txt.style.color = '#FF4060';
+    btn.style.background = 'linear-gradient(135deg,#FF4060,#FF0040)';
+  } else {
+    txt.textContent = '✅ Currently OFF — app is live';
+    txt.style.color = '#06FFB4';
+    btn.style.background = 'linear-gradient(135deg,#8338EC,#3A86FF)';
+  }
+  // Live preview
+  const msg = document.getElementById('maint-message').value;
+  if (msg) document.getElementById('maint-preview-txt').textContent = msg;
+}
+
+window.saveMaintenance = async () => {
+  const message = document.getElementById('maint-message').value.trim() ||
+    'WaveMeet is currently under maintenance. We will be back shortly. Thank you for your patience! 🚀';
+  try {
+    await setDoc(doc(db,'config','maintenance'), {
+      enabled: _maintEnabled,
+      message,
+      updatedAt: new Date().toISOString()
+    });
+    showSuc('maint-suc', _maintEnabled
+      ? '⚠️ Maintenance mode is now ON — users will see the maintenance screen'
+      : '✅ Maintenance mode is OFF — app is live for all users'
+    );
+    atoast(_maintEnabled ? '⚠️ Maintenance mode activated' : '✅ App is now live');
+  } catch(e) { showErr2('maint-err','Error: '+e.message); }
+};
+
+// Live preview update
+document.addEventListener('DOMContentLoaded', () => {
+  const msgEl = document.getElementById('maint-message');
+  if (msgEl) {
+    msgEl.addEventListener('input', () => {
+      const prev = document.getElementById('maint-preview-txt');
+      if (prev) prev.textContent = msgEl.value || 'We are performing scheduled maintenance…';
+    });
+  }
+});
+
+// ── PAYMENTS ─────────────────────────────────
+window.loadPayments = async () => {
+  const cont = document.getElementById('payments-container');
+  if(!cont) return;
+  cont.innerHTML='<div class="loader">Loading payments…</div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'payments'), where('status','==','success'))
+    );
+    if(snap.empty){
+      cont.innerHTML='<div class="loader" style="color:#505070">No payments yet</div>';
+      return;
+    }
+    // Sort by date desc
+    const payments = [];
+    snap.forEach(d => payments.push({id:d.id,...d.data()}));
+    payments.sort((a,b) => new Date(b.verifiedAt||0) - new Date(a.verifiedAt||0));
+
+    const rows = payments.map(p => {
+      const date = p.verifiedAt ? new Date(p.verifiedAt).toLocaleString() : '—';
+      const exp  = p.expiresAt  ? new Date(p.expiresAt).toLocaleDateString()  : '—';
+      return `<tr>
+        <td class="nc">${p.customer_email||'—'}</td>
+        <td style="color:#06FFB4;font-weight:700;">${p.currency||''} ${p.amount||'—'}</td>
+        <td>${p.months||3} months</td>
+        <td>${date}</td>
+        <td>${exp}</td>
+        <td style="font-size:11px;color:#505070;font-family:monospace;">${(p.transaction_id||'').slice(0,12)}…</td>
+      </tr>`;
+    });
+
+    cont.innerHTML=`<div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Email</th><th>Amount</th><th>Plan</th><th>Paid At</th><th>Expires</th><th>TX ID</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table></div>
+    <div style="padding:12px;font-size:12px;color:#505070;font-family:monospace;text-align:right;">
+      Total payments: ${payments.length} · 
+      Total revenue: ${payments.reduce((sum,p)=>sum+(p.amount||0),0).toLocaleString()} (mixed currencies)
+    </div>`;
+  } catch(e) {
+    cont.innerHTML=`<div class="loader" style="color:#FF4060">Error: ${e.message}</div>`;
+  }
+};
 
 // ── CONFIG ──────────────────────────────────
 window.loadConfig = async () => {
@@ -470,16 +773,29 @@ window.showSuc=showSuc;
 
 <script>
 function switchTab(name){
-  const tabs=['users','subscription','turn'];
+  const tabs=['users','payments','subscription','features','maintenance','turn'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name)?.classList.add('active');
+  if(name==='payments'    && window.loadPayments)    window.loadPayments();
+  if(name==='features'    && window.loadFeatures)    window.loadFeatures();
+  if(name==='maintenance' && window.loadMaintenance) window.loadMaintenance();
 }
 window.switchTab=switchTab;
 
 let _at;
 function atoast(msg,dur=3000){const e=document.getElementById('atst');e.textContent=msg;e.classList.add('show');clearTimeout(_at);_at=setTimeout(()=>e.classList.remove('show'),dur);}
 window.atoast=atoast;
+
+function setTog(id, isOn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('on', isOn);
+}
+window.setTog = setTog;
+
+function showErr2(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),6000);}
+window.showErr2=showErr2;
 </script>
 </body>
 </html>
